@@ -23,7 +23,7 @@ interface JwtPayload {
 }
 
 // Khóa bí mật từ biến môi trường
-const jwtSecret = process.env.ACCES_TOKEN_SECRET!;
+const jwtSecret = process.env.ACCESS_TOKEN_SECRET!;
 const jwtRefreshSecret = process.env.REFRESH_TOKEN_SECRET!;
 
 // Cấu hình file tĩnh
