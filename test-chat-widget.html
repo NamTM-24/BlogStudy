@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Chat Widget</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/chat-widget.css" />
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body class="bg-gray-100 min-h-screen p-8">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-3xl font-bold text-gray-800 mb-8">Test Chat Widget</h1>
+
+      <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <h2 class="text-xl font-semibold mb-4">Debug Information</h2>
+        <div id="debug-info" class="text-sm text-gray-600">
+          <p>Loading...</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-lg p-6">
+        <h2 class="text-xl font-semibold mb-4">Test Controls</h2>
+        <div class="space-y-4">
+          <button
+            id="test-add-message"
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Add Test Message
+          </button>
+          <button
+            id="test-toggle-chat"
+            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          >
+            Toggle Chat Window
+          </button>
+          <button
+            id="test-clear-messages"
+            class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+          >
+            Clear Messages
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/chat-widget.js"></script>
+    <script>
+      // Debug script
+      document.addEventListener("DOMContentLoaded", () => {
+        const debugInfo = document.getElementById("debug-info");
+
+        // Update debug info
+        function updateDebugInfo() {
+          const chatWidget = window.chatWidget;
+          if (chatWidget) {
+            debugInfo.innerHTML = `
+                        <p><strong>Chat Widget Status:</strong> ${
+                          chatWidget ? "Loaded" : "Not loaded"
+                        }</p>
+                        <p><strong>User Role:</strong> ${
+                          chatWidget.isAdmin ? "ADMIN" : "USER"
+                        }</p>
+                        <p><strong>Socket Connected:</strong> ${
+                          chatWidget.socket ? "Yes" : "No"
+                        }</p>
+                        <p><strong>Chat Open:</strong> ${
+                          chatWidget.isOpen ? "Yes" : "No"
+                        }</p>
+                        <p><strong>Messages Count:</strong> ${
+                          chatWidget.messages.length
+                        }</p>
+                        <p><strong>Messages:</strong></p>
+                        <pre class="bg-gray-100 p-2 rounded text-xs">${JSON.stringify(
+                          chatWidget.messages,
+                          null,
+                          2
+                        )}</pre>
+                    `;
+          } else {
+            debugInfo.innerHTML = "<p>Chat widget not loaded yet...</p>";
+          }
+        }
+
+        // Test buttons
+        document
+          .getElementById("test-add-message")
+          .addEventListener("click", () => {
+            const chatWidget = window.chatWidget;
+            if (chatWidget) {
+              const testMessage = {
+                id: `test-${Date.now()}`,
+                userId: "admin",
+                userName: "Test Admin",
+                message: `Test message at ${new Date().toLocaleTimeString()}`,
+                timestamp: new Date(),
+                isAdmin: true,
+              };
+              chatWidget.addMessage(testMessage);
+              updateDebugInfo();
+            }
+          });
+
+        document
+          .getElementById("test-toggle-chat")
+          .addEventListener("click", () => {
+            const chatWidget = window.chatWidget;
+            if (chatWidget) {
+              chatWidget.toggleChat();
+              updateDebugInfo();
+            }
+          });
+
+        document
+          .getElementById("test-clear-messages")
+          .addEventListener("click", () => {
+            const chatWidget = window.chatWidget;
+            if (chatWidget) {
+              chatWidget.messages = [];
+              chatWidget.renderMessages();
+              updateDebugInfo();
+            }
+          });
+
+        // Update debug info every 2 seconds
+        setInterval(updateDebugInfo, 2000);
+
+        // Initial update
+        setTimeout(updateDebugInfo, 1000);
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// status post
+enum PostStatus {
+  ACTIVE
+  INACTIVE
+}
+
+// role 
+
+enum Role {
+  USER // user thường: đọc + tạo/reply comment, chỉ sửa comment của chính mình
+  ADMIN // (chủ blog): có quyền xoá bất kỳ comment
+}
+
+// Model cho User đăng ký 
+model User {
+  id              Int       @id @default(autoincrement())
+  name            String
+  email           String    @unique
+  password        String
+  avatar          String?   // Thêm: avatar của user
+  role            Role      @default(USER) // Thêm: phân quyền USER/ADMIN
+  createdAt       DateTime  @default(now())
+  // Quan hệ
+  comments        Comment[] // 1 user có nhiều comment 1-N
+  deletedComments Comment[] @relation("DeletedBy") // comment mà user này đã xoá
+  editedComments  Comment[] @relation("EditedBy")
+}
+
+// Post
+model Post {
+  id          Int        @id @default(autoincrement())
+  title       String
+  slug        String     @unique // dùng để map từ URL -> post
+  url         String?
+  // ==== thêm mới ====
+  excerpt     String?    @db.Text
+  authorName  String?
+  authorUrl   String?
+  heroImage   String?
+  lead        String?    @db.Text
+  blocks      Json? // lưu block content
+  publishedAt DateTime? // 
+  // 
+  createdAt   DateTime   @default(now())
+  status      PostStatus @default(ACTIVE)
+  deletedAt   DateTime? // Xoá mềm
+
+  // quan hệ
+  comments Comment[] // 1 bài có nhiều comment
+}
+
+// Comments
+model Comment {
+  id       Int    @id @default(autoincrement())
+  postId   Int
+  authorId Int
+  parentId Int? // reply theo tầng
+  content  String
+
+  // Kiểm duyệt và kiểm tra
+  isDeleted      Boolean   @default(false) //lưu trạng thái xóa của comment.
+  deletedAt      DateTime?
+  deletedById    Int? // ai xoá (thường là ADMIN)
+  editedAt       DateTime?
+  lastEditedById Int? // ai sửa lần cuối 
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Các quan hệ
+  post     Post      @relation(fields: [postId], references: [id], onDelete: Cascade) // comment thuoc ve 1 post 
+  author   User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parent   Comment?  @relation("CommentToComment", fields: [parentId], references: [id])
+  children Comment[] @relation("CommentToComment")
+
+  deletedBy    User? @relation("DeletedBy", fields: [deletedById], references: [id])
+  lastEditedBy User? @relation("EditedBy", fields: [lastEditedById], references: [id])
+
+  @@index([postId, createdAt])
+  @@index([parentId])
+  @@index([isDeleted])
+}

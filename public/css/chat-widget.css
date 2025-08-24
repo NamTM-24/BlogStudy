@@ -1,0 +1,545 @@
+/* Chat Widget Custom Styles */
+
+/* Smooth animations */
+.chat-widget-enter {
+  animation: slideInUp 0.3s ease-out;
+}
+
+.chat-widget-exit {
+  animation: slideOutDown 0.3s ease-in;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideOutDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+/* Message bubble animations */
+.message-bubble {
+  animation: messageSlideIn 0.3s ease-out;
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Typing indicator animation */
+.typing-dots {
+  animation: typing 1.4s infinite;
+}
+
+@keyframes typing {
+  0%,
+  20% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-5px);
+  }
+  60% {
+    transform: translateY(0);
+  }
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* Custom scrollbar for chat messages */
+#chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+#chat-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#chat-messages::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3);
+  border-radius: 3px;
+}
+
+#chat-messages::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.5);
+}
+
+/* Hover effects for buttons */
+.chat-button-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chat-button-hover:hover {
+  transform: scale(1.05) rotate(5deg);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Ensure chat window layout works correctly */
+#chat-window {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+#chat-messages {
+  flex: 1 !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+}
+
+/* Ensure input area is visible */
+#chat-input {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+#send-message {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ensure chat button is clickable */
+#chat-button {
+  position: relative !important;
+  z-index: 1000 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+#chat-button:hover {
+  transform: scale(1.1) !important;
+}
+
+/* Ensure chat window positioning */
+#chat-window {
+  position: absolute !important;
+  z-index: 999 !important;
+  pointer-events: auto !important;
+}
+
+#chat-window.hidden {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+#chat-window:not(.hidden) {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ensure chat window starts closed */
+#chat-window {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Ensure messages display correctly */
+#chat-messages .flex {
+  margin-bottom: 1rem !important;
+}
+
+#chat-messages .flex:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Message bubble styles */
+.bg-blue-600 {
+  background-color: #2563eb !important;
+}
+
+.bg-gray-200 {
+  background-color: #e5e7eb !important;
+}
+
+.text-gray-800 {
+  color: #1f2937 !important;
+}
+
+/* Message input focus effects */
+.chat-input-focus {
+  transition: all 0.2s ease-in-out;
+}
+
+.chat-input-focus:focus {
+  transform: scale(1.02);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Notification animations */
+.notification-slide {
+  animation: notificationSlideIn 0.3s ease-out;
+}
+
+@keyframes notificationSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Avatar hover effects */
+.avatar-hover {
+  transition: all 0.2s ease-in-out;
+}
+
+.avatar-hover:hover {
+  transform: scale(1.1);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Online status indicator */
+.online-indicator {
+  position: relative;
+}
+
+.online-indicator::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  background: #10b981;
+  border: 2px solid white;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+/* Message timestamp fade */
+.message-timestamp {
+  opacity: 0.7;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.message-timestamp:hover {
+  opacity: 1;
+}
+
+/* Responsive design improvements */
+@media (max-width: 768px) {
+  #chat-widget {
+    bottom: 1rem;
+    right: 1rem;
+  }
+
+  #chat-window {
+    width: calc(100vw - 2rem);
+    max-width: 400px;
+    height: 60vh;
+    max-height: 500px;
+  }
+}
+
+/* Dark mode enhancements */
+.dark .chat-window {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.dark .chat-messages {
+  background: #111827;
+}
+
+.dark .message-bubble-user {
+  background: #374151;
+  border-color: #4b5563;
+}
+
+.dark .message-bubble-admin {
+  background: #1e40af;
+  border-color: #3b82f6;
+}
+
+/* Loading states */
+.chat-loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.chat-loading::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Accessibility improvements */
+.chat-widget:focus-within {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.chat-button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .chat-window {
+    border-width: 2px;
+  }
+
+  .message-bubble {
+    border-width: 1px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .chat-widget-enter,
+  .chat-widget-exit,
+  .message-bubble,
+  .notification-slide {
+    animation: none;
+  }
+
+  .chat-button-hover:hover {
+    transform: none;
+  }
+
+  .avatar-hover:hover {
+    transform: none;
+  }
+}
+
+/* Admin Chat Widget Styles */
+.admin-chat-bottom-right-small {
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  z-index: 9999 !important;
+}
+
+.admin-chat-bottom-right {
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 80px !important;
+  z-index: 9999 !important;
+}
+
+/* Admin small widget (icon) */
+.admin-small-widget {
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  border: 2px solid #fff;
+}
+
+.admin-small-widget:hover {
+  transform: scale(1.1);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+.admin-small-widget svg {
+  width: 18px;
+  height: 18px;
+  color: white;
+}
+
+/* Admin large widget (chat window) */
+.admin-large-widget {
+  width: 400px;
+  height: 500px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 2px solid #e5e7eb;
+}
+
+.admin-large-widget .chat-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-large-widget .chat-header h3 {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.admin-large-widget .close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.admin-large-widget .close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.admin-large-widget .chat-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background: #f8fafc;
+}
+
+.admin-large-widget .chat-input {
+  padding: 15px 20px;
+  border-top: 1px solid #e5e7eb;
+  background: white;
+  display: flex;
+  gap: 10px;
+}
+
+.admin-large-widget .chat-input input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 25px;
+  outline: none;
+  font-size: 14px;
+}
+
+.admin-large-widget .chat-input input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.admin-large-widget .send-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.admin-large-widget .send-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* Dark mode for admin widgets */
+.dark .admin-large-widget {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.dark .admin-large-widget .chat-messages {
+  background: #111827;
+}
+
+.dark .admin-large-widget .chat-input {
+  background: #1f2937;
+  border-top-color: #374151;
+}
+
+.dark .admin-large-widget .chat-input input {
+  background: #374151;
+  border-color: #4b5563;
+  color: white;
+}
+
+/* Responsive admin widgets */
+@media (max-width: 768px) {
+  .admin-large-widget {
+    width: calc(100vw - 40px);
+    height: calc(100vh - 120px);
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+  }
+
+  .admin-small-widget {
+    width: 40px;
+    height: 40px;
+  }
+
+  .admin-small-widget svg {
+    width: 16px;
+    height: 16px;
+  }
+}

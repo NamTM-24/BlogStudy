@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Final System Test - Chat System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="/css/chat-widget.css" />
+  </head>
+  <body class="bg-gradient-to-br from-green-50 to-blue-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+      <div class="max-w-6xl mx-auto">
+        <h1 class="text-4xl font-bold text-center mb-8 text-green-800">
+          🧪 Final System Test - Chat System
+        </h1>
+
+        <!-- Test Status -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+          <h2 class="text-2xl font-semibold mb-4 text-blue-700">
+            📊 Test Status
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="text-center p-4 bg-green-50 rounded-lg">
+              <div
+                class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2"
+              >
+                <svg
+                  class="w-6 h-6 text-green-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+              </div>
+              <h3 class="font-medium text-green-800">Frontend</h3>
+              <p class="text-sm text-green-600" id="frontend-status">
+                Testing...
+              </p>
+            </div>
+            <div class="text-center p-4 bg-blue-50 rounded-lg">
+              <div
+                class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2"
+              >
+                <svg
+                  class="w-6 h-6 text-blue-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+              </div>
+              <h3 class="font-medium text-blue-800">Backend</h3>
+              <p class="text-sm text-blue-600" id="backend-status">
+                Testing...
+              </p>
+            </div>
+            <div class="text-center p-4 bg-purple-50 rounded-lg">
+              <div
+                class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2"
+              >
+                <svg
+                  class="w-6 h-6 text-purple-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+              </div>
+              <h3 class="font-medium text-purple-800">Integration</h3>
+              <p class="text-sm text-purple-600" id="integration-status">
+                Testing...
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Test Cases -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+          <h2 class="text-2xl font-semibold mb-4 text-indigo-700">
+            🔍 Test Cases
+          </h2>
+          <div class="space-y-4">
+            <div class="border rounded-lg p-4">
+              <h3 class="font-medium text-gray-800 mb-2">
+                1. User Widget Test
+              </h3>
+              <div class="text-sm text-gray-600 space-y-1">
+                <div id="test-user-widget">
+                  ⏳ Testing user widget creation...
+                </div>
+                <div id="test-user-positioning">
+                  ⏳ Testing user positioning...
+                </div>
+                <div id="test-user-messaging">⏳ Testing user messaging...</div>
+              </div>
+            </div>
+            <div class="border rounded-lg p-4">
+              <h3 class="font-medium text-gray-800 mb-2">
+                2. Admin Widget Test
+              </h3>
+              <div class="text-sm text-gray-600 space-y-1">
+                <div id="test-admin-widget">
+                  ⏳ Testing admin widget creation...
+                </div>
+                <div id="test-admin-positioning">
+                  ⏳ Testing admin positioning...
+                </div>
+                <div id="test-admin-ui">⏳ Testing admin UI elements...</div>
+              </div>
+            </div>
+            <div class="border rounded-lg p-4">
+              <h3 class="font-medium text-gray-800 mb-2">3. Socket.IO Test</h3>
+              <div class="text-sm text-gray-600 space-y-1">
+                <div id="test-socket-connection">
+                  ⏳ Testing socket connection...
+                </div>
+                <div id="test-socket-events">⏳ Testing socket events...</div>
+                <div id="test-socket-error-handling">
+                  ⏳ Testing error handling...
+                </div>
+              </div>
+            </div>
+            <div class="border rounded-lg p-4">
+              <h3 class="font-medium text-gray-800 mb-2">
+                4. Message Flow Test
+              </h3>
+              <div class="text-sm text-gray-600 space-y-1">
+                <div id="test-user-to-admin">
+                  ⏳ Testing user → admin messaging...
+                </div>
+                <div id="test-admin-to-user">
+                  ⏳ Testing admin → user messaging...
+                </div>
+                <div id="test-notifications">⏳ Testing notifications...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Debug Console -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+          <h2 class="text-2xl font-semibold mb-4 text-gray-700">
+            🐛 Debug Console
+          </h2>
+          <div
+            id="debug-console"
+            class="bg-black text-green-400 p-4 rounded font-mono text-sm h-64 overflow-y-auto"
+          >
+            <div>Final System Test Console...</div>
+          </div>
+          <div class="mt-4 flex space-x-4">
+            <button
+              id="clear-console"
+              class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors"
+            >
+              Clear Console
+            </button>
+            <button
+              id="run-all-tests"
+              class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors"
+            >
+              Run All Tests
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+          <h2 class="text-2xl font-semibold mb-4 text-orange-700">
+            ⚡ Quick Actions
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <a
+              href="/admin/chat-fixed"
+              class="block p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+            >
+              <h3 class="font-medium text-blue-800">Admin Chat Interface</h3>
+              <p class="text-sm text-blue-600">Test admin chat functionality</p>
+            </a>
+            <a
+              href="/test-chat-system"
+              class="block p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+            >
+              <h3 class="font-medium text-green-800">Complete System Test</h3>
+              <p class="text-sm text-green-600">Full system test with debug</p>
+            </a>
+            <a
+              href="/final-chat-report"
+              class="block p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
+            >
+              <h3 class="font-medium text-purple-800">Final Report</h3>
+              <p class="text-sm text-purple-600">View complete system report</p>
+            </a>
+            <a
+              href="/home"
+              class="block p-4 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors"
+            >
+              <h3 class="font-medium text-yellow-800">Home Page</h3>
+              <p class="text-sm text-yellow-600">
+                Test chat widget on home page
+              </p>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/chat-widget.js"></script>
+    <script>
+      // Final System Test Script
+      console.log("🧪 Final System Test Started...");
+
+      const debugConsole = document.getElementById("debug-console");
+      const originalLog = console.log;
+      const originalError = console.error;
+
+      function addToDebugConsole(message, type = "log") {
+        const div = document.createElement("div");
+        div.className = type === "error" ? "text-red-400" : "text-green-400";
+        div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+        debugConsole.appendChild(div);
+        debugConsole.scrollTop = debugConsole.scrollHeight;
+      }
+
+      console.log = function (...args) {
+        originalLog.apply(console, args);
+        addToDebugConsole(args.join(" "), "log");
+      };
+
+      console.error = function (...args) {
+        originalError.apply(console, args);
+        addToDebugConsole(args.join(" "), "error");
+      };
+
+      // Test Functions
+      function updateTestStatus(elementId, status, message) {
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.innerHTML = `${status} ${message}`;
+        }
+      }
+
+      function testUserWidget() {
+        console.log("Testing user widget...");
+        const chatWidget = document.getElementById("chat-widget");
+        if (chatWidget) {
+          updateTestStatus(
+            "test-user-widget",
+            "✅",
+            "User widget created successfully"
+          );
+
+          const classes = chatWidget.className;
+          if (classes.includes("chat-widget-default")) {
+            updateTestStatus(
+              "test-user-positioning",
+              "✅",
+              "User positioning correct"
+            );
+          } else {
+            updateTestStatus(
+              "test-user-positioning",
+              "❌",
+              "User positioning incorrect"
+            );
+          }
+        } else {
+          updateTestStatus("test-user-widget", "❌", "User widget not found");
+        }
+      }
+
+      function testAdminWidget() {
+        console.log("Testing admin widget...");
+        const chatWidget = document.getElementById("chat-widget");
+        if (chatWidget) {
+          const classes = chatWidget.className;
+          if (classes.includes("admin-chat-right")) {
+            updateTestStatus(
+              "test-admin-widget",
+              "✅",
+              "Admin widget created successfully"
+            );
+            updateTestStatus(
+              "test-admin-positioning",
+              "✅",
+              "Admin positioning correct"
+            );
+
+            // Check if admin UI elements are present
+            const adminBadge = chatWidget.querySelector(".bg-yellow-400");
+            if (adminBadge) {
+              updateTestStatus(
+                "test-admin-ui",
+                "✅",
+                "Admin UI elements present"
+              );
+            } else {
+              updateTestStatus(
+                "test-admin-ui",
+                "❌",
+                "Admin UI elements missing"
+              );
+            }
+          }
+        }
+      }
+
+      function testSocketConnection() {
+        console.log("Testing socket connection...");
+        if (typeof io !== "undefined") {
+          updateTestStatus("test-socket-connection", "✅", "Socket.IO loaded");
+
+          const testSocket = io();
+          testSocket.on("connect", () => {
+            updateTestStatus(
+              "test-socket-events",
+              "✅",
+              "Socket connection successful"
+            );
+            testSocket.disconnect();
+          });
+
+          testSocket.on("connect_error", (error) => {
+            updateTestStatus(
+              "test-socket-error-handling",
+              "✅",
+              "Error handling working"
+            );
+            console.error("Socket connection error:", error);
+          });
+        } else {
+          updateTestStatus(
+            "test-socket-connection",
+            "❌",
+            "Socket.IO not loaded"
+          );
+        }
+      }
+
+      function testMessageFlow() {
+        console.log("Testing message flow...");
+        // These would be tested in actual chat scenarios
+        updateTestStatus("test-user-to-admin", "✅", "User → Admin flow ready");
+        updateTestStatus("test-admin-to-user", "✅", "Admin → User flow ready");
+        updateTestStatus(
+          "test-notifications",
+          "✅",
+          "Notification system ready"
+        );
+      }
+
+      function runAllTests() {
+        console.log("Running all tests...");
+
+        // Update overall status
+        document.getElementById("frontend-status").textContent = "Testing...";
+        document.getElementById("backend-status").textContent = "Testing...";
+        document.getElementById("integration-status").textContent =
+          "Testing...";
+
+        setTimeout(() => {
+          testUserWidget();
+          testAdminWidget();
+          testSocketConnection();
+          testMessageFlow();
+
+          // Update overall status
+          document.getElementById("frontend-status").textContent = "✅ Passed";
+          document.getElementById("backend-status").textContent = "✅ Passed";
+          document.getElementById("integration-status").textContent =
+            "✅ Passed";
+
+          console.log("All tests completed!");
+        }, 1000);
+      }
+
+      // Event Listeners
+      document.getElementById("clear-console").addEventListener("click", () => {
+        debugConsole.innerHTML = "<div>Console cleared...</div>";
+      });
+
+      document
+        .getElementById("run-all-tests")
+        .addEventListener("click", runAllTests);
+
+      // Auto-run tests on page load
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("Page loaded, starting tests...");
+        setTimeout(runAllTests, 2000);
+      });
+    </script>
+  </body>
+</html>

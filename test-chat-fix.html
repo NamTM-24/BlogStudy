@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Chat Fix</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .chat-box {
+        border: 1px solid #ccc;
+        padding: 20px;
+        margin: 10px 0;
+      }
+      .messages {
+        height: 300px;
+        overflow-y: auto;
+        border: 1px solid #eee;
+        padding: 10px;
+        margin: 10px 0;
+      }
+      .input-area {
+        display: flex;
+        gap: 10px;
+      }
+      input {
+        flex: 1;
+        padding: 8px;
+      }
+      button {
+        padding: 8px 16px;
+      }
+      .message {
+        margin: 5px 0;
+        padding: 5px;
+        border-radius: 5px;
+      }
+      .user-msg {
+        background: #e3f2fd;
+        text-align: right;
+      }
+      .admin-msg {
+        background: #f3e5f5;
+      }
+      .status {
+        color: green;
+        font-weight: bold;
+      }
+      .error {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Test Chat Fix - Kiểm tra Admin có thể gửi tin nhắn</h1>
+
+    <div class="chat-box">
+      <h2>User Chat (ID: 2)</h2>
+      <div id="user-status" class="status">Connecting...</div>
+      <div id="user-messages" class="messages"></div>
+      <div class="input-area">
+        <input type="text" id="user-input" placeholder="Nhập tin nhắn..." />
+        <button onclick="sendUserMessage()">Gửi</button>
+      </div>
+    </div>
+
+    <div class="chat-box">
+      <h2>Admin Chat (NamHT)</h2>
+      <div id="admin-status" class="status">Connecting...</div>
+      <div id="admin-messages" class="messages"></div>
+      <div class="input-area">
+        <input type="text" id="admin-input" placeholder="Nhập tin nhắn..." />
+        <input
+          type="text"
+          id="target-user"
+          placeholder="Target User ID"
+          value="2"
+        />
+        <button onclick="sendAdminMessage()">Gửi</button>
+      </div>
+    </div>
+
+    <div class="chat-box">
+      <h2>Debug Info</h2>
+      <div id="debug-info"></div>
+    </div>
+
+    <script>
+      // User Socket
+      const userSocket = io();
+      const userToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzU1ODQ4MzQwLCJleHAiOjE3NTU5MzQ3NDB9.test"; // User ID: 2
+
+      userSocket.on("connect", () => {
+        document.getElementById("user-status").textContent =
+          "Connected as User (ID: 2)";
+        userSocket.emit("join-chat", { token: userToken });
+        addDebugInfo("User connected");
+      });
+
+      userSocket.on("chat-message", (message) => {
+        const messagesDiv = document.getElementById("user-messages");
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${
+          message.isAdmin ? "admin-msg" : "user-msg"
+        }`;
+        messageDiv.textContent = `${message.userName || "Unknown"}: ${
+          message.message
+        }`;
+        messagesDiv.appendChild(messageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        addDebugInfo(`User received: ${message.userName}: ${message.message}`);
+      });
+
+      function sendUserMessage() {
+        const input = document.getElementById("user-input");
+        const message = input.value.trim();
+        if (message) {
+          userSocket.emit("send-message", { message, token: userToken });
+          input.value = "";
+          addDebugInfo(`User sent: ${message}`);
+        }
+      }
+
+      // Admin Socket
+      const adminSocket = io();
+      const adminToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzU1ODQ4MzQwLCJleHAiOjE3NTU5MzQ3NDB9.test"; // Admin ID: 1
+
+      adminSocket.on("connect", () => {
+        document.getElementById("admin-status").textContent =
+          "Connected as Admin (NamHT)";
+        adminSocket.emit("join-chat", { token: adminToken });
+        addDebugInfo("Admin connected");
+      });
+
+      adminSocket.on("chat-message", (message) => {
+        const messagesDiv = document.getElementById("admin-messages");
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${
+          message.isAdmin ? "admin-msg" : "user-msg"
+        }`;
+        messageDiv.textContent = `${message.userName || "Unknown"}: ${
+          message.message
+        }`;
+        messagesDiv.appendChild(messageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        addDebugInfo(`Admin received: ${message.userName}: ${message.message}`);
+      });
+
+      adminSocket.on("new-user-message", (data) => {
+        console.log("New user message:", data);
+        const messagesDiv = document.getElementById("admin-messages");
+        const messageDiv = document.createElement("div");
+        messageDiv.className = "message user-msg";
+        messageDiv.style.backgroundColor = "#ffeb3b";
+        messageDiv.textContent = `NEW: ${data.userName}: ${data.message}`;
+        messagesDiv.appendChild(messageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        addDebugInfo(`Admin notification: ${data.userName}: ${data.message}`);
+      });
+
+      function sendAdminMessage() {
+        const input = document.getElementById("admin-input");
+        const targetInput = document.getElementById("target-user");
+        const message = input.value.trim();
+        const targetUserId = targetInput.value.trim();
+
+        if (message && targetUserId) {
+          addDebugInfo(`Admin sending to user ${targetUserId}: ${message}`);
+          adminSocket.emit("send-message", {
+            message,
+            token: adminToken,
+            targetUserId: targetUserId,
+          });
+          input.value = "";
+        } else {
+          addDebugInfo(
+            "Admin message error: missing message or targetUserId",
+            "error"
+          );
+        }
+      }
+
+      function addDebugInfo(message, type = "info") {
+        const debugDiv = document.getElementById("debug-info");
+        const time = new Date().toLocaleTimeString();
+        const div = document.createElement("div");
+        div.className = type === "error" ? "error" : "";
+        div.textContent = `[${time}] ${message}`;
+        debugDiv.appendChild(div);
+        debugDiv.scrollTop = debugDiv.scrollHeight;
+      }
+
+      // Enter key handlers
+      document
+        .getElementById("user-input")
+        .addEventListener("keypress", (e) => {
+          if (e.key === "Enter") sendUserMessage();
+        });
+
+      document
+        .getElementById("admin-input")
+        .addEventListener("keypress", (e) => {
+          if (e.key === "Enter") sendAdminMessage();
+        });
+    </script>
+  </body>
+</html>

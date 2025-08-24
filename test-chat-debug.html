@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Widget Debug Test</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="/css/chat-widget.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .debug-panel {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .debug-log {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 10px;
+        margin: 10px 0;
+        font-family: monospace;
+        font-size: 12px;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      .test-button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      .test-button:hover {
+        background: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Chat Widget Debug Test</h1>
+
+    <div class="debug-panel">
+      <h3>Debug Controls</h3>
+      <button class="test-button" onclick="testUserRole()">
+        Test User Role
+      </button>
+      <button class="test-button" onclick="testSocketConnection()">
+        Test Socket Connection
+      </button>
+      <button class="test-button" onclick="testChatHistory()">
+        Test Chat History
+      </button>
+      <button class="test-button" onclick="clearLogs()">Clear Logs</button>
+    </div>
+
+    <div class="debug-panel">
+      <h3>Debug Logs</h3>
+      <div id="debug-log" class="debug-log"></div>
+    </div>
+
+    <script src="/js/chat-widget.js"></script>
+    <script>
+      // Override console.log to capture logs
+      const originalLog = console.log;
+      const originalError = console.error;
+      const debugLog = document.getElementById("debug-log");
+
+      function addLog(message, type = "log") {
+        const timestamp = new Date().toLocaleTimeString();
+        const logEntry = document.createElement("div");
+        logEntry.style.color = type === "error" ? "red" : "black";
+        logEntry.textContent = `[${timestamp}] ${message}`;
+        debugLog.appendChild(logEntry);
+        debugLog.scrollTop = debugLog.scrollHeight;
+      }
+
+      console.log = function (...args) {
+        originalLog.apply(console, args);
+        addLog(args.join(" "));
+      };
+
+      console.error = function (...args) {
+        originalError.apply(console, args);
+        addLog(args.join(" "), "error");
+      };
+
+      // Test functions
+      function testUserRole() {
+        addLog("🧪 Testing user role detection...");
+        if (window.chatWidget) {
+          window.chatWidget.checkUserRole();
+        } else {
+          addLog("❌ ChatWidget not initialized");
+        }
+      }
+
+      function testSocketConnection() {
+        addLog("🧪 Testing socket connection...");
+        if (window.chatWidget && window.chatWidget.socket) {
+          addLog("✅ Socket exists, ID: " + window.chatWidget.socket.id);
+        } else {
+          addLog("❌ Socket not connected");
+        }
+      }
+
+      function testChatHistory() {
+        addLog("🧪 Testing chat history request...");
+        if (window.chatWidget && window.chatWidget.socket) {
+          const token = window.chatWidget.getCookie("accessToken");
+          window.chatWidget.socket.emit("request-chat-history", { token });
+          addLog("📤 Sent chat history request");
+        } else {
+          addLog("❌ Cannot send chat history request");
+        }
+      }
+
+      function clearLogs() {
+        debugLog.innerHTML = "";
+      }
+
+      // Initialize ChatWidget
+      document.addEventListener("DOMContentLoaded", function () {
+        addLog("🚀 Page loaded, initializing ChatWidget...");
+        if (typeof ChatWidget !== "undefined") {
+          window.chatWidget = new ChatWidget();
+          addLog("✅ ChatWidget initialized");
+        } else {
+          addLog("❌ ChatWidget class not found");
+        }
+      });
+    </script>
+  </body>
+</html>

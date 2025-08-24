@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Chat Simple</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .chat-box {
+        border: 1px solid #ccc;
+        padding: 20px;
+        margin: 10px 0;
+      }
+      .messages {
+        height: 300px;
+        overflow-y: auto;
+        border: 1px solid #eee;
+        padding: 10px;
+        margin: 10px 0;
+      }
+      .input-area {
+        display: flex;
+        gap: 10px;
+      }
+      input {
+        flex: 1;
+        padding: 8px;
+      }
+      button {
+        padding: 8px 16px;
+      }
+      .message {
+        margin: 5px 0;
+        padding: 5px;
+        border-radius: 5px;
+      }
+      .user-msg {
+        background: #e3f2fd;
+        text-align: right;
+      }
+      .admin-msg {
+        background: #f3e5f5;
+      }
+      .status {
+        color: green;
+        font-weight: bold;
+      }
+      .error {
+        color: red;
+        font-weight: bold;
+      }
+      .debug {
+        background: #f5f5f5;
+        padding: 10px;
+        margin: 10px 0;
+        font-family: monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Test Chat Simple</h1>
+
+    <div class="debug" id="debug-log">
+      <strong>Debug Log:</strong><br />
+      <div id="debug-content"></div>
+    </div>
+
+    <div class="chat-box">
+      <h3>User Chat (ID: 2)</h3>
+      <div class="messages" id="user-messages"></div>
+      <div class="input-area">
+        <input type="text" id="user-input" placeholder="Nhập tin nhắn..." />
+        <button onclick="sendUserMessage()">Gửi</button>
+      </div>
+      <div id="user-status" class="status">Chưa kết nối</div>
+    </div>
+
+    <div class="chat-box">
+      <h3>Admin Chat (ID: 1)</h3>
+      <div class="messages" id="admin-messages"></div>
+      <div class="input-area">
+        <input type="text" id="admin-input" placeholder="Nhập tin nhắn..." />
+        <button onclick="sendAdminMessage()">Gửi</button>
+      </div>
+      <div id="admin-status" class="status">Chưa kết nối</div>
+    </div>
+
+    <script>
+      let userSocket, adminSocket;
+      let currentTargetUserId = null;
+
+      function log(message) {
+        const debugContent = document.getElementById("debug-content");
+        const timestamp = new Date().toLocaleTimeString();
+        debugContent.innerHTML += `[${timestamp}] ${message}<br>`;
+        debugContent.scrollTop = debugContent.scrollHeight;
+        console.log(message);
+      }
+
+      function addMessage(containerId, message, isAdmin = false) {
+        const container = document.getElementById(containerId);
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${isAdmin ? "admin-msg" : "user-msg"}`;
+        messageDiv.textContent = `${isAdmin ? "Admin" : "User"}: ${message}`;
+        container.appendChild(messageDiv);
+        container.scrollTop = container.scrollHeight;
+      }
+
+      // User Socket
+      function connectUser() {
+        log("Connecting user...");
+        userSocket = io();
+
+        // Hardcoded token for user ID 2
+        const userToken =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzU1ODQ4MzQwLCJleHAiOjE3NTU5MzQ3NDB9.1234567890";
+
+        userSocket.emit("join-chat", { token: userToken });
+
+        userSocket.on("connect", () => {
+          log("User connected");
+          document.getElementById("user-status").textContent = "Đã kết nối";
+        });
+
+        userSocket.on("chat-message", (message) => {
+          log(`User received message: ${JSON.stringify(message)}`);
+          addMessage("user-messages", message.message, message.isAdmin);
+        });
+
+        userSocket.on("disconnect", () => {
+          log("User disconnected");
+          document.getElementById("user-status").textContent = "Mất kết nối";
+        });
+      }
+
+      // Admin Socket
+      function connectAdmin() {
+        log("Connecting admin...");
+        adminSocket = io();
+
+        // Hardcoded token for admin ID 1
+        const adminToken =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzU1ODQ4MzQwLCJleHAiOjE3NTU5MzQ3NDB9.1234567890";
+
+        adminSocket.emit("join-chat", { token: adminToken });
+
+        adminSocket.on("connect", () => {
+          log("Admin connected");
+          document.getElementById("admin-status").textContent = "Đã kết nối";
+        });
+
+        adminSocket.on("new-user-message", (data) => {
+          log(`Admin received new-user-message: ${JSON.stringify(data)}`);
+          currentTargetUserId = data.userId;
+          addMessage("admin-messages", `[${data.userName}]: ${data.message}`);
+        });
+
+        adminSocket.on("chat-message", (message) => {
+          log(`Admin received chat-message: ${JSON.stringify(message)}`);
+          addMessage("admin-messages", message.message, message.isAdmin);
+        });
+
+        adminSocket.on("disconnect", () => {
+          log("Admin disconnected");
+          document.getElementById("admin-status").textContent = "Mất kết nối";
+        });
+      }
+
+      function sendUserMessage() {
+        const input = document.getElementById("user-input");
+        const message = input.value.trim();
+
+        if (message && userSocket) {
+          log(`User sending message: ${message}`);
+          userSocket.emit("send-message", { message });
+          addMessage("user-messages", message);
+          input.value = "";
+        }
+      }
+
+      function sendAdminMessage() {
+        const input = document.getElementById("admin-input");
+        const message = input.value.trim();
+
+        if (message && adminSocket && currentTargetUserId) {
+          log(
+            `Admin sending message to user ${currentTargetUserId}: ${message}`
+          );
+          adminSocket.emit("send-message", {
+            message,
+            targetUserId: currentTargetUserId,
+          });
+          addMessage("admin-messages", message, true);
+          input.value = "";
+        } else if (!currentTargetUserId) {
+          log("ERROR: No target user selected for admin message");
+          alert("Chưa có user nào gửi tin nhắn để reply");
+        }
+      }
+
+      // Auto-connect on load
+      window.onload = function () {
+        connectUser();
+        connectAdmin();
+      };
+
+      // Enter key handlers
+      document
+        .getElementById("user-input")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") sendUserMessage();
+        });
+
+      document
+        .getElementById("admin-input")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") sendAdminMessage();
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Chat Widget</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="/css/chat-widget.css" />
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+      <h1 class="text-3xl font-bold text-center mb-8">Test Chat Widget</h1>
+
+      <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6">
+        <h2 class="text-xl font-semibold mb-4">Hướng dẫn test:</h2>
+        <ol class="list-decimal list-inside space-y-2 text-gray-700">
+          <li>Mở chat widget bằng cách click vào nút chat ở góc phải dưới</li>
+          <li>Nhập tin nhắn và gửi</li>
+          <li>Kiểm tra xem tin nhắn có hiển thị không</li>
+          <li>Mở trang admin chat để test từ phía admin</li>
+        </ol>
+
+        <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+          <h3 class="font-semibold text-blue-800 mb-2">Thông tin:</h3>
+          <p class="text-blue-700">
+            Chat widget sẽ tự động xuất hiện ở góc phải dưới màn hình.
+          </p>
+          <p class="text-blue-700">
+            Nếu bạn là admin, chat widget sẽ được đặt ở giữa màn hình.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/chat-widget.js"></script>
+    <script>
+      // Test script để kiểm tra chat widget
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("Test page loaded");
+
+        // Kiểm tra xem chat widget có được load không
+        setTimeout(() => {
+          const chatWidget = document.getElementById("chat-widget");
+          if (chatWidget) {
+            console.log("✅ Chat widget found");
+          } else {
+            console.log("❌ Chat widget not found");
+          }
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>

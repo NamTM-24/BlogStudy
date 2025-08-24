@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/style.css" />
+  <title>Đăng ký</title>
+</head>
+<body>
+  <section>
+    <!-- Hiệu ứng lá rơi -->
+    <div class="leaves">
+      <div class="set">
+        <div><img src="/images/leaf_01.png"></div>
+        <div><img src="/images/leaf_02.png"></div>
+        <div><img src="/images/leaf_03.png"></div>
+        <div><img src="/images/leaf_04.png"></div>
+        <div><img src="/images/leaf_01.png"></div>
+        <div><img src="/images/leaf_02.png"></div>
+        <div><img src="/images/leaf_03.png"></div>
+        <div><img src="/images/leaf_04.png"></div>
+      </div>
+    </div>
+    <!-- Ảnh nền -->
+    <img src="/images/bg.jpg" class="bg">
+    <!-- Ảnh cô gái -->
+    <img src="/images/girl.png" class="girl">
+    <!-- Ảnh cây -->
+    <img src="/images/trees.png" class="trees">
+    <!-- Form đăng ký -->
+    <div class="login">
+      <h2>Đăng ký</h2>
+      <form action="/register" method="POST">
+        <div class="inputBox">
+          <input type="email" name="email" placeholder="Email" required>
+        </div>
+        <div class="inputBox">
+          <input type="text" name="name" placeholder="Tên" required>
+        </div>
+        <div class="inputBox">
+          <input type="password" name="password" placeholder="Mật khẩu" required>
+        </div>
+        <div class="inputBox">
+          <input type="password" name="confirmPassword" placeholder="Xác nhận mật khẩu" required>
+        </div>
+        <div class="inputBox">
+          <input type="submit" value="Đăng ký" id="btn">
+        </div>
+      </form>
+      <div class="group">
+        <a href="/forgot-password">Quên mật khẩu</a>
+        <a href="/login">Đã có tài khoản? Đăng nhập</a>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
